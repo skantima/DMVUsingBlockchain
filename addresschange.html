@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Address Change</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Address Change</h1>
+        <h2 id="addresschange"></h2>
+        <label for="name" class="col-lg-2 control-label">Driver ID</label>
+        <input id="driverid" type="text">
+        <label for="name" class="col-lg-2 control-label">Old Address</label>
+        <input id="oldadd" type="text">
+        <label for="name" class="col-lg-2 control-label">New Address</label>
+        <input id="newadd" type="text">
+<!--         <label for="name" class="col-lg-2 control-label">Transfer to : </label>
+        <input id="transferredto" type="text"> -->
+        <button id="button">Update</button>
+<!--         <button id="button1">Traded</button> -->
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script>
+       // Our future code here..
+               if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        var AddressChangeContract = web3.eth.contract([
+    {
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_driverid",
+				"type": "string"
+			},
+			{
+				"name": "_oldadd",
+				"type": "string"
+			},
+			{
+				"name": "_newadd",
+				"type": "string"
+			}
+		],
+		"name": "setAddress",
+		"outputs": [],
+		"payable": false,
+		"type": "function",
+		"stateMutability": "nonpayable"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getAddress",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"type": "function",
+		"stateMutability": "view"
+    }
+]);
+    var AddressChange = AddressChangeContract.at('0x5949724b3075c6fb51c0e92ff17783c9641c9ae9');
+    console.log(AddressChange);
+
+    AddressChange.getAddress(function(error, result){
+            if(!error)
+                {
+                    $("#addresschange").html('Driver ID: '+result[0]+'.  '+'The old Address is: '+result[1]+'.  '+'The new address is: '+result[2]);
+                    console.log(result);
+                }
+            else
+                console.log(error);
+        });
+        $("#button").click(function() {
+            alert("Address has been updated");
+            AddressChange.setAddress($("#driverid").val(), $("#oldadd").val(), $("#newadd").val());
+            document.location.reload();
+        });
+        //         $("#button1").click(function() {
+        //     alert("Vehicle Traded");
+        //     ReportVehicle.setReport($("#vehicleid").val(), $("#price").val(), $("#reading").val(), $("#transferredto").val());
+        // });
+    </script>
+</body>
+</html>

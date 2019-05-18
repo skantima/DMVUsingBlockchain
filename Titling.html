@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vehicle Service</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+
+
+</head>
+<body>
+    <div class="container">
+    	
+        <h1>Titling a Vehicle</h1>
+        <h2 id="vehicle"></h2>
+		<label for="name" class="col-lg-2 control-label">Vehicle ID</label>
+        <input id="vehicleId" type="text">
+        <label for="name" class="col-lg-2 control-label">Vehicle Odometer</label>
+		<input id="vehicleOdometer" type="text">
+		<label for="name" class="col-lg-2 control-label">Vehicle Price</label>
+        <input id="vehiclePrice" type="text">
+		<label for="name" class="col-lg-2 control-label">Vehicle Title</label>
+		<input id="vehicleTitle" type="text">
+		
+        <button id="button">Update Vehicle Title</button>
+
+    </div>
+     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+       if (typeof web3 !== 'undefined') {
+           web3 = new Web3(web3.currentProvider);
+       } else {
+           web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+       }
+       web3.eth.defaultAccount = web3.eth.accounts['4'];
+       console.log(web3.eth.accounts['4'])
+       var VehicleService = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_vehicleId",
+				"type": "string"
+			},
+			{
+				"name": "_vehicleOdometer",
+				"type": "string"
+			},
+			{
+				"name": "_vehiclePrice",
+				"type": "string"
+			},
+			{
+				"name": "_vehicleTitle",
+				"type": "string"
+			}
+		],
+		"name": "setVehicleTitle",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getVehicleTitle",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+])
+       var Vehicle = VehicleService.at('0x85229829aadd28465a138892d37ec743edc99aa9');
+	   console.log(VehicleService);
+	   Vehicle.getVehicleTitle(function(error, result){
+         if(!error)
+            {
+                   $("#vehicle").html(result[0],result[1],result[2],result[3]);
+                    console.log(result);
+                 }
+           else
+                 console.log(error);
+         });
+        $("#button").click(function() {
+
+        	var did = $("#vehicleId").val();
+            Vehicle.setVehicleTitle($("#vehicleId").val(), $("#vehicleOdometer").val(),$("#vehiclePrice").val(),$("#vehicleTitle").val());
+            document.location.reload(true);
+
+            balance = web3.eth.getBalance('0x253aef65ff6cfd12b57e311e72bee8ba9708635b');
+       		console.log(balance)
+
+	   
+
+
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vital Record</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Vital Record</h1>
+        <h2 id="VitalRecord"></h2>
+        <label for="name" class="col-lg-2 control-label">Name of Deceased</label>
+        <input id="name" type="text">
+        <label for="name" class="col-lg-2 control-label">Date of Death</label>
+        <input id="date" type="text">
+        <label for="name" class="col-lg-2 control-label">Place of Death</label>
+        <input id="place" type="text">
+        <label for="name" class="col-lg-2 control-label">Phone Number</label>
+        <input id="phone" type="text">
+        <button id="button">Get Record</button>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script>
+       
+               if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+        web3.eth.defaultAccount = web3.eth.accounts[4];
+        var VitalRecordContract = web3.eth.contract([
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getRecord",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"name": "_date",
+				"type": "string"
+			},
+			{
+				"name": "_place",
+				"type": "string"
+			},
+			{
+				"name": "_phone",
+				"type": "string"
+			}
+		],
+		"name": "setRecord",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+])
+    var VitalRecords = VitalRecordContract.at('0x0e296b090fc48e9b8734fc13438aa470b38fbe0a');
+    console.log(VitalRecords);
+
+    VitalRecords.getRecord(function(error, result){
+            if(!error)
+                {
+                    $("#VitalRecord").html(result[0]+result[1]+result[2]+result[3]);
+                    console.log(result);
+                }
+            else
+                console.log(error);
+        });
+        $("#button").click(function() {
+            VitalRecords.setRecord($("#name").val(), $("#date").val(), $("#place").val(), $("#phone").val());
+             
+        })
+    </script>
+</body>
+</html>

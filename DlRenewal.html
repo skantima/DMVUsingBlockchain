@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DL Renewal</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>DL Renewal</h1>
+        <h2 id="DLRenewal"></h2>
+        <label for="name" class="col-lg-2 control-label">Driver ID</label>
+        <input id="driverid" type="text">
+        <label for="name" class="col-lg-2 control-label">Expiration Date</label>
+        <input id="expirationdate" type="text">
+        <label for="name" class="col-lg-2 control-label">Renewal Until</label>
+        <input id="newdate" type="text">
+        <button id="button">Renew</button>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script>
+       // Our future code here..
+               if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        var DLRenewalContract = web3.eth.contract([
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "getRenewal",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            },
+            {
+                "name": "",
+                "type": "string"
+            },
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_driverId",
+                "type": "string"
+            },
+            {
+                "name": "_expirationDate",
+                "type": "string"
+            },
+            {
+                "name": "_newDate",
+                "type": "string"
+            }
+        ],
+        "name": "setRenewal",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]);
+    var DLRenewal = DLRenewalContract.at('0x64fed97cad95fd0783df4185a98404bbb0cf2f2b');
+    console.log(DLRenewal);
+
+    DLRenewal.getRenewal(function(error, result){
+            if(!error)
+                {
+                    $("#DLRenewal").html('Driver ID: '+result[0]+'  The expiration date is  '+result[1]+'  The DL is renewed until  '+result[2]);
+                    console.log(result);
+
+                }
+            else
+                console.log(error);
+        });
+        $("#button").click(function() {
+            alert("DL is renewed");
+            DLRenewal.setRenewal($("#driverid").val(), $("#expirationdate").val(), $("#newdate").val());
+            document.location.reload();
+
+        });
+    </script>
+</body>
+</html>

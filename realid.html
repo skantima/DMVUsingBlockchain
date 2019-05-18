@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Real ID</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+
+        <h1>Real ID</h1>
+        <h4>Inorder to obtain a real id, a user must have 2 forms of address proofs</h4>
+
+        <h2 id="realId"></h2>
+		<label for="name" class="col-lg-2 control-label">Driver ID</label>
+        <input id="driverId" type="text">
+        <label for="name" class="col-lg-2 control-label">Address Proof 1</label>
+		<input id="address1" type="text">
+		<label for="name" class="col-lg-2 control-label">Address Proof 2</label>
+        <input id="address2" type="text">
+
+       
+        
+
+        <button id="button">Result</button>
+
+
+    </div>
+    <div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+       if (typeof web3 !== 'undefined') {
+           web3 = new Web3(web3.currentProvider);
+       } else {
+           web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+       }
+
+       web3.eth.defaultAccount = web3.eth.accounts[4];
+
+       var RealIDService = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_driverId",
+				"type": "string"
+			},
+			{
+				"name": "_address1",
+				"type": "string"
+			},
+			{
+				"name": "_address2",
+				"type": "string"
+			}
+		],
+		"name": "setId",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getId",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+])
+       var Real = RealIDService.at('0x2aea3122ab54265540726d4699b20dcdf2b434d2');
+       console.log(Real);
+
+	  Real.getId(function(error, result){
+            if(!error)
+                {
+                    $("#realId").html('The driver ID is: '+result[0]+'. '+' The Entered Address 1 is: '+result[1]+'. '+' The Entered Address 2 is: ' +result[2]+'. The Driver ID is Real ID compliant');
+                    console.log(result);
+                }
+            else{
+                console.log(error);
+            }
+        });
+
+        $("#button").click(function() {
+			alert("The ID is REAL ID compliant");
+            Real.setId($("#driverId").val(), $("#address1").val(), $("#address2").val());
+			document.location.reload();
+        })
+    </script>
+
+  
+
+</body>
+</html>
